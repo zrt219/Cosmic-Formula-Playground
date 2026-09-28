@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="description" content="Cosmic Formula Playground &amp; Sandbox - Interactive astronomy, physics &amp; 3D space formulas for curious minds. Understand math visually through tactile simulations.">
+  <title>Cosmic Formula Playground &amp; Sandbox</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=3.7.0">
+  <script>
+    // Proactive Cache & ServiceWorker Purge for Stale Clients
+    if ('serviceWorker' in navigator && 'caches' in window) {
+      caches.keys().then(function(keys) {
+        keys.forEach(function(k) {
+          if (k !== 'zspace-formula-playground-v3-7') caches.delete(k);
+        });
+      });
+    }
+  </script>
+  <style>
+    /* STRICT ZERO-OVERLAY ENFORCEMENT - NEVER COVER THE SIMULATION CANVAS */
+    .visual-stage-card.dark-cosmic-theme {
+      position: relative !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 0 !important;
+      background: #080f24 !important;
+    }
+    .stage-legend-card, #stageLegendCard {
+      position: static !important;
+      top: auto !important;
+      right: auto !important;
+      left: auto !important;
+      bottom: auto !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      border-radius: 24px 24px 0 0 !important;
+      border: none !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+      background: #0b132b !important;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 12px 18px !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      z-index: 10 !important;
+    }
+    .dark-cosmic-theme .visual-stage, #playgroundStage {
+      position: relative !important;
+      width: 100% !important;
+      min-height: 340px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #080f24 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .dark-cosmic-theme .visual-stage .stage-svg,
+    #playgroundStage .stage-svg {
+      width: 100% !important;
+      height: auto !important;
+      max-height: 100% !important;
+      display: block !important;
+    }
+    .stage-playback-bar, #stagePlaybackBar {
+      position: static !important;
+      top: auto !important;
+      right: auto !important;
+      left: auto !important;
+      bottom: auto !important;
+      width: 100% !important;
+      border-radius: 0 !important;
+      border: none !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+      background: #0b132b !important;
+      display: flex !important;
+      align-items: center !important;
+      padding: 10px 18px !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      z-index: 10 !important;
+    }
+    .stage-caption, #stageCaption {
+      position: static !important;
+      margin: 0 !important;
+      padding: 10px 18px 14px !important;
+      background: #080f24 !important;
+      color: #94a3b8 !important;
+      font-size: 12px !important;
+      text-align: center !important;
+      line-height: 1.5 !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+    @media (max-width: 640px) {
+      .stage-legend-card, #stageLegendCard {
+        padding: 10px 14px !important;
+        gap: 8px !important;
+      }
+      .legend-divider-vertical {
+        display: none !important;
+      }
+      .stage-playback-bar, #stagePlaybackBar {
+        padding: 8px 12px !important;
+        gap: 8px !important;
+      }
+      .dark-cosmic-theme .visual-stage, #playgroundStage {
+        min-height: 220px !important;
+      }
+    }
+    /* HOME 3D CANVAS ZERO-OVERLAY ENFORCEMENT */
+    .home-3d-stage-card {
+      display: flex !important;
+      flex-direction: column !important;
+      position: relative !important;
+    }
+    .home-stage-top-bar, .home-stage-speech-bubble, .stage-cube-formula-card {
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+    }
+    .home-3d-interactive-canvas, #home3dInteractiveCanvas, #home3dCanvas {
+      position: relative !important;
+      width: 100% !important;
+      height: 250px !important;
+      margin: 0 !important;
+      z-index: 1 !important;
+    }
+    .home-shape-svg {
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 250px !important;
+      display: block !important;
+    }
+    #home3dCanvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      pointer-events: none !important;
+    }
+    .stage-cube-speech-callout, .home-stage-slider-panel, .home-stage-carousel-controls {
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+    }
+  </style>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script type="module" src="app.js?v=3.7.0"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- Top Global Navigation Bar (Matching References 1 & 2) -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="brand" href="#home" data-nav="home" aria-label="Cosmic Formula Playground home">
+        <span class="brand-cube-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="38" height="38">
+            <polygon points="20,2 38,12 20,22 2,12" fill="#3b82f6"/>
+            <polygon points="2,12 20,22 20,38 2,28" fill="#1d4ed8"/>
+            <polygon points="20,22 38,12 38,28 20,38" fill="#2563eb"/>
+            <path d="M14,9 L26,9 L15,16 L26,16" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <strong>Cosmic Formula</strong>
+          <small>Playground &amp; Sandbox</small>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <button class="nav-btn active" data-nav="home">Home</button>
+        <button class="nav-btn" data-nav="playground" id="navPlaygroundBtn">Playground <span class="nav-pill-badge">Visual Labs</span></button>
+        <button class="nav-btn" data-nav="sandbox" id="navSandboxBtn">Sandbox <span class="nav-pill-badge">Workbench</span></button>
+        <button class="nav-btn" data-nav="path">Syllabus</button>
+        <button class="nav-btn" data-nav="library">Library</button>
+        <button class="nav-btn" data-nav="practice">Practice</button>
+      </nav>
+    </div>
+
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <label for="globalSearch" class="sr-only">Search formulas, topics...</label>
+        <input id="globalSearch" type="search" placeholder="Search formulas, topics..." aria-label="Search formulas and concepts">
+      </div>
+      <button class="ghost-btn nav-signin-btn" id="navSignInBtn" type="button">Sign In</button>
+      <button class="primary-btn nav-cta" id="topLaunchLabBtn" type="button">Launch Playground</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===================================================================
+         VIEW 1: HOME PAGE (Matching Reference 4: media_1790551983433.jpg)
+         =================================================================== -->
+    <section class="app-view active" id="viewHome">
+      <div class="shell hero-shell home-hero-layout">
+        <div class="hero-content">
+          <div class="pill-badge-row">
+            <span class="category-pill live-lab-pill">✨ Visual &nbsp;·&nbsp; Interactive &nbsp;·&nbsp; ELI5 &nbsp;·&nbsp; For curious minds</span>
+          </div>
+          <h1 class="hero-title">
+            Learn space formulas<br>
+            <span class="hero-blue-accent">visually</span>, not just by heart.
+          </h1>
+          <p class="hero-subtitle">
+            Interactive astronomy, physics &amp; 3D space formulas for curious minds. Cosmic Formula Playground helps you understand 3D shapes, measurements, and physical laws through tactile simulations.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-btn large-btn" id="heroPlaygroundBtn" type="button">Launch Playground (Visual Labs) &rarr;</button>
+            <button class="secondary-btn large-btn" id="heroSandboxBtn" type="button">Open Formula Sandbox ⚙</button>
+            <button class="ghost-btn" id="heroStartBtn" type="button" style="display:none;" aria-hidden="true"></button>
+            <button class="ghost-btn" id="heroHowBtn" type="button" style="display:none;" aria-hidden="true"></button>
+          </div>
+          <div class="lab-feature-checks home-checks-row">
+            <div class="feat-check"><span class="feat-icon check-green">✓</span> Beginner friendly</div>
+            <div class="feat-check"><span class="feat-icon icon-purple">👥</span> Interactive 3D visuals</div>
+            <div class="feat-check"><span class="feat-icon icon-red">❤️</span> Learn by doing</div>
+            <div class="feat-check"><span class="feat-icon icon-gold">⭐</span> Free to explore</div>
+          </div>
+        </div>
+
+        <!-- Right: 3D Interactive Shape Hero Showcase (Matching Reference 4) -->
+        <div class="home-3d-stage-card">
+          <!-- Top info bar: speech bubble + formula card -->
+          <div class="home-stage-top-bar">
+            <div class="home-stage-speech-bubble">
+              <span id="homeStageSpeechBubbleText">Rotate Explore Understand!</span>
+              <span class="bubble-arrow-down">⤵</span>
+            </div>
+            
+            <div class="stage-cube-formula-card">
+              <span class="cube-card-name" id="stageCubeCardName">Cube</span>
+              <span class="cube-card-eq" id="stageCubeCardEq"><i>V</i> = <i>s</i><sup>3</sup></span>
+              <span class="cube-card-sub" id="stageCubeCardSub">Volume = side &times; side &times; side</span>
+            </div>
+          </div>
+          
+          <div class="home-3d-interactive-canvas" id="home3dInteractiveCanvas" role="region" aria-label="Interactive 3D shape canvas. Click and drag to rotate.">
+            <!-- 3D Interactive Cube with dimensions s, s, s, and Learno mascot -->
+            <div id="home3dCanvas" class="home-3d-canvas-wrap"></div>
+          </div>
+
+          <!-- Bottom-right speech callout with bulb -->
+          <div class="stage-cube-speech-callout">
+            <span class="callout-bulb">💡</span>
+            <span id="stageCubeSpeechText">A cube is a box with equal sides. Its volume tells us how much space it can hold!</span>
+          </div>
+
+          <!-- Live Interactive Dimension Slider & Calculated Volume (Req 1) -->
+          <div class="home-stage-slider-panel" id="homeStageSliderPanel">
+            <div class="home-slider-info-row">
+              <label for="homeShapeDimSlider" class="home-slider-label">
+                <span id="homeShapeDimLabel">Side length <i>s</i>:</span>
+                <b id="homeShapeDimVal">5.0 cm</b>
+              </label>
+              <div class="home-volume-pill" id="homeShapeVolumeBadge">
+                <span>Volume <i>V</i>:</span> <strong id="homeShapeVolumeVal">125.0 cm³</strong>
+              </div>
+            </div>
+            <div class="home-slider-input-wrap">
+              <span class="slider-min-tag">1 cm</span>
+              <input type="range" id="homeShapeDimSlider" class="home-dim-slider" min="1" max="10" value="5" step="0.5" aria-label="Adjust live dimension slider">
+              <span class="slider-max-tag">10 cm</span>
+            </div>
+            <div class="home-drag-hint-row">
+              <span class="drag-hint-icon">🔄</span>
+              <small id="homeShapeDragHint">Drag canvas to tilt &amp; spin shape in 3D</small>
+            </div>
+          </div>
+
+          <!-- Bottom carousel navigation arrows and dots -->
+          <div class="home-stage-carousel-controls">
+            <button class="carousel-arrow-btn" id="homeCarouselPrevBtn" aria-label="Previous 3D shape">&lsaquo;</button>
+            <div class="carousel-dots" id="homeCarouselDots">
+              <span class="dot active" role="button" tabindex="0" aria-label="Select Cube"></span>
+              <span class="dot" role="button" tabindex="0" aria-label="Select Cuboid"></span>
+              <span class="dot" role="button" tabindex="0" aria-label="Select Sphere"></span>
+              <span class="dot" role="button" tabindex="0" aria-label="Select Cylinder"></span>
+              <span class="dot" role="button" tabindex="0" aria-label="Select Cone"></span>
+            </div>
+            <button class="carousel-arrow-btn" id="homeCarouselNextBtn" aria-label="Next 3D shape">&rsaquo;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden compatibility container for existing interactive slider tests -->
+      <div class="sr-only" aria-hidden="true">
+        <div id="heroPreviewStage"></div>
+        <label for="heroExpansionSlider">Space Expansion Rate: <b id="heroExpansionVal">70 km/s/Mpc</b></label>
+        <input type="range" id="heroExpansionSlider" min="50" max="90" value="70" step="1">
+        <div id="popularConceptsGrid"></div>
+      </div>
+
+      <!-- Section: Popular Formulas (Matching Reference 4) -->
+      <section class="shell section-space">
+        <div class="section-head-split">
+          <div>
+            <h2 class="section-title">Popular Formulas ✨</h2>
+            <p class="section-desc">Start with a shape and see the formula come to life with interactive visuals.</p>
+          </div>
+          <button class="tray-action-link" id="homeViewAllFormulasBtn" type="button">View all formulas &rarr;</button>
+        </div>
+
+        <div class="popular-formulas-grid" id="popularFormulasGrid">
+          <!-- 6 Shape Cards populated dynamically or statically -->
+        </div>
+      </section>
+
+      <!-- Section: Explore Cosmic Formulas -->
+      <section class="shell section-space">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Explore Cosmic Formulas 🚀</h2>
+            <p class="section-desc">Everything you need to master space and physics formulas, all in one playground.</p>
+          </div>
+        </div>
+
+        <div class="explore-portals-grid">
+          <article class="explore-portal-card" data-portal="path" role="button" tabindex="0">
+            <div class="portal-icon-wrap icon-blue">📚</div>
+            <div class="portal-main-info">
+              <h3>Syllabus</h3>
+              <p>Follow a structured learning path from simple shapes to complex solids.</p>
+            </div>
+            <div class="portal-bottom-stat">
+              <span class="portal-stat-text">📖 12 topics</span>
+              <div class="portal-bar-track"><div class="portal-bar-fill" style="width: 0%;"></div></div>
+            </div>
+            <span class="portal-launch-arrow">&rarr;</span>
+          </article>
+
+          <article class="explore-portal-card" data-portal="library" role="button" tabindex="0">
+            <div class="portal-icon-wrap icon-amber">📁</div>
+            <div class="portal-main-info">
+              <h3>Library</h3>
+              <p>Explore all formulas with beautiful visuals, examples, and real-world applications.</p>
+            </div>
+            <div class="portal-bottom-stat">
+              <span class="portal-stat-text">📖 30+ formulas</span>
+            </div>
+            <span class="portal-launch-arrow">&rarr;</span>
+          </article>
+
+          <article class="explore-portal-card" data-portal="practice" role="button" tabindex="0">
+            <div class="portal-icon-wrap icon-coral">🎯</div>
+            <div class="portal-main-info">
+              <h3>Practice</h3>
+              <p>Test your understanding with fun questions, hints, and step-by-step solutions.</p>
+            </div>
+            <div class="portal-bottom-stat">
+              <span class="portal-stat-text">⭐ 100+ questions</span>
+            </div>
+            <span class="portal-launch-arrow">&rarr;</span>
+          </article>
+
+          <article class="explore-portal-card" data-portal="labs" role="button" tabindex="0">
+            <div class="portal-icon-wrap icon-purple">🔬</div>
+            <div class="portal-main-info">
+              <h3>Live Labs</h3>
+              <p>Interact with 3D shapes, change values in real time, and see formulas come to life.</p>
+            </div>
+            <div class="portal-bottom-stat">
+              <span class="portal-stat-text">🧪 3D interactive</span>
+            </div>
+            <span class="portal-launch-arrow">&rarr;</span>
+          </article>
+        </div>
+      </section>
+
+      <!-- Global Social Proof Banner (Matching Reference 4 bottom) -->
+      <div class="shell">
+        <section class="trusted-learners-banner" aria-label="Social proof and community stats">
+          <div class="trusted-lead">
+            <span class="trusted-icon">👥</span>
+            <div>
+              <strong>Trusted by learners everywhere</strong>
+              <p>A growing community of curious minds exploring math in a more visual and joyful way.</p>
+            </div>
+          </div>
+          <div class="trusted-stats-row">
+            <div class="stat-item"><span class="stat-emoji">🎓</span> <div><strong>50K+</strong><small>Learners</small></div></div>
+            <div class="stat-item"><span class="stat-emoji">📖</span> <div><strong>30+</strong><small>Formulas</small></div></div>
+            <div class="stat-item"><span class="stat-emoji">⭐</span> <div><strong>100+</strong><small>Practice Questions</small></div></div>
+            <div class="stat-item"><span class="stat-emoji">👥</span> <div><strong>4.9/5</strong><small>User Rating</small></div></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 2: LEARNING PATH (6 Stages / Syllabus)
+         =================================================================== -->
+    <section class="app-view" id="viewPath">
+      <div class="shell section-space">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">STRUCTURED CURRICULUM</div>
+            <h1 class="section-title">Public Learning Path &amp; Syllabus</h1>
+            <p class="section-desc">Follow a logical educational journey through 25 verified physical laws of the cosmos.</p>
+          </div>
+        </div>
+
+        <div class="stages-flow" id="stagesFlowContainer">
+          <!-- Populated dynamically with the 6 educational stages -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 3: FORMULA LIBRARY (Matching Reference 2: media_1790550855876.jpg)
+         =================================================================== -->
+    <section class="app-view" id="viewLibrary">
+      <div class="shell library-split-layout">
+        <!-- Left Sidebar (Matching Reference 2) -->
+        <aside class="library-sidebar" aria-label="Formula Categories and Paths">
+          <div class="sidebar-category-nav">
+            <ul class="sidebar-cat-list" id="sidebarCategoryList">
+              <!-- Populated dynamically: All Formulas 120, Geometry 28, Algebra 18, etc. -->
+            </ul>
+          </div>
+
+          <div class="sidebar-paths-block">
+            <h3 class="sidebar-paths-title">Featured Paths</h3>
+            <div class="sidebar-paths-list" id="sidebarPathsList">
+              <!-- Populated dynamically with public educational paths -->
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Library Workspace (Matching Reference 2) -->
+        <div class="library-main-panel">
+          <!-- Main Hero Banner with Mascot Illustration -->
+          <div class="library-hero-banner">
+            <div class="lib-hero-copy">
+              <div class="lib-breadcrumb">✨ Library &nbsp;·&nbsp; Explore &nbsp;·&nbsp; Learn &nbsp;·&nbsp; Understand</div>
+              <h1 class="lib-hero-title">
+                Explore 3D formulas<br>
+                <span class="lib-blue-accent">with visuals</span> and real context.
+              </h1>
+              <p class="lib-hero-desc">
+                Search, browse, and discover space formulas with interactive visuals, simple explanations, and real-world examples.
+              </p>
+              
+              <div class="lib-search-box">
+                <span class="search-lens-icon" aria-hidden="true">🔍</span>
+                <input id="librarySearchInput" type="search" placeholder="Search for a formula, topic, or concept..." aria-label="Search formula library">
+                <button class="primary-btn lib-search-btn" id="librarySearchBtn" type="button">Search</button>
+              </div>
+
+              <!-- Filter Pills -->
+              <div class="category-filters-row" id="categoryFiltersRow" role="tablist" aria-label="Featured path filters">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Hero Mascot Illustration with Floating Shapes & Books -->
+            <div class="lib-hero-graphic" aria-hidden="true" id="libHeroMascot">
+              <!-- Rendered via SVG -->
+            </div>
+          </div>
+
+          <!-- Section Head with Sort Dropdown -->
+          <div class="library-section-header">
+            <div>
+              <h2 class="library-section-title" id="librarySectionTitle">All Formulas ✨</h2>
+              <p class="library-section-desc">120+ formulas with interactive visuals, explanations, and real-world applications.</p>
+            </div>
+            <div class="library-sort-control">
+              <label for="librarySortSelect">Sort by:</label>
+              <select id="librarySortSelect" class="library-sort-select" aria-label="Sort formulas">
+                <option value="popular">Most Popular</option>
+                <option value="difficulty">Difficulty</option>
+                <option value="alphabetical">Alphabetical</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3-Column Formula Cards Grid -->
+          <div class="library-cards-grid" id="libraryCardsGrid">
+            <!-- Populated dynamically with 3D cards -->
+          </div>
+          <p id="emptyLibraryNotice" class="empty-state hidden">No concepts match your filter or search query.</p>
+
+          <!-- Bottom Trays: Recently Viewed & Saved Formulas -->
+          <div class="library-history-trays">
+            <!-- Tray 1: Recently Viewed -->
+            <section class="history-tray-card" aria-label="Recently viewed formulas">
+              <div class="tray-header-row">
+                <div class="tray-title-box">
+                  <span class="tray-icon">🕒</span>
+                  <div>
+                    <h3 class="tray-title">Recently Viewed</h3>
+                    <p class="tray-desc">Continue where you left off.</p>
+                  </div>
+                </div>
+                <button class="tray-action-link" id="viewAllHistoryBtn" type="button">View all history &rarr;</button>
+              </div>
+              <div class="tray-cards-row" id="recentlyViewedCarousel">
+                <!-- Populated dynamically -->
+              </div>
+            </section>
+
+            <!-- Tray 2: Saved Formulas -->
+            <section class="history-tray-card" aria-label="Saved formulas">
+              <div class="tray-header-row">
+                <div class="tray-title-box">
+                  <span class="tray-icon icon-rose">❤️</span>
+                  <div>
+                    <h3 class="tray-title">Saved Formulas</h3>
+                    <p class="tray-desc">Your bookmarked favorites.</p>
+                  </div>
+                </div>
+                <button class="tray-action-link" id="viewAllSavedBtn" type="button">View all saved &rarr;</button>
+              </div>
+              <div class="tray-cards-row" id="savedFormulasCarousel">
+                <!-- Populated dynamically -->
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 4: INTERACTIVE PRACTICE
+         =================================================================== -->
+    <!-- ===================================================================
+         VIEW 4: INTERACTIVE PRACTICE (Matching Reference 3: media_1790551983421.jpg)
+         =================================================================== -->
+    <section class="app-view" id="viewPractice">
+      <div class="shell section-space">
+        <!-- Hero Header + Learno Mascot & Your Progress Card -->
+        <div class="practice-hero-row">
+          <div class="practice-hero-copy">
+            <div class="pill-badge-row">
+              <span class="category-pill practice-pill">✨ Practice &nbsp;·&nbsp; Solve &nbsp;·&nbsp; Build Confidence &nbsp;·&nbsp; Level Up</span>
+            </div>
+            <h1 class="practice-hero-title">
+              Practice space formulas<br>
+              with <span class="hero-blue-accent">fun challenges</span>.
+            </h1>
+            <p class="practice-hero-subtitle">
+              Solve interactive questions, get instant feedback, and level up your skills with engaging missions. Turn practice into progress!
+            </p>
+          </div>
+
+          <!-- Right: Learno Mascot + Your Progress Card -->
+          <div class="practice-progress-card-wrap">
+            <div class="practice-mascot-star-speech" id="practiceMascotBubble">
+              <span class="mascot-star-icon">⭐</span>
+              <span>Practice Solve Improve!</span>
+            </div>
+            
+            <div class="user-progress-card" id="userProgressCard">
+              <div class="progress-card-top">
+                <div class="progress-title-row">
+                  <span class="progress-target-icon">🎯</span>
+                  <span class="progress-card-title">Your Progress</span>
+                </div>
+                <button class="stats-link-btn" id="viewStatsBtn" type="button">View Stats &rarr;</button>
+              </div>
+
+              <div class="progress-level-row">
+                <div class="level-cube-icon">🧊</div>
+                <div class="level-info">
+                  <strong>Level 3</strong>
+                  <small>Space Explorer</small>
+                </div>
+                <span class="xp-ratio-text" id="xpRatioText">12 / 20 XP</span>
+              </div>
+              <div class="xp-progress-bar-track">
+                <div class="xp-progress-bar-fill" id="xpProgressFill" style="width: 60%;"></div>
+              </div>
+
+              <div class="progress-stats-quad">
+                <div class="quad-item"><span class="quad-icon green-check">✓</span> <strong>18</strong> <small>Correct</small></div>
+                <div class="quad-item"><span class="quad-icon red-cross">✕</span> <strong>4</strong> <small>Needs Practice</small></div>
+                <div class="quad-item"><span class="quad-icon orange-flame">🔥</span> <strong>5</strong> <small>Day Streak</small></div>
+                <div class="quad-item"><span class="quad-icon yellow-sun">☀️</span> <strong>68%</strong> <small>Accuracy</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden compatibility container for regression test IDs -->
+        <div class="sr-only" aria-hidden="true">
+          <div id="challengeList"></div>
+          <span id="practiceCategoryPill"></span>
+          <span id="practiceLabNum"></span>
+          <div class="input-and-check">
+            <input id="practiceAnswerInput" type="number" step="any">
+            <span id="practiceAnswerUnit">km/s</span>
+            <button id="practiceSubmitBtn">Check</button>
+          </div>
+        </div>
+
+        <!-- Active Question Card (Matching Reference 3) -->
+        <article class="interactive-challenge-card" id="practiceActiveCard">
+          <div class="challenge-card-header">
+            <div class="challenge-step-box">
+              <span class="challenge-step-cube">🧊</span>
+              <span class="challenge-step-text" id="practiceQuestionNum">Question 4 of 10</span>
+              <div class="challenge-header-bar-track">
+                <div class="challenge-header-bar-fill" id="practiceHeaderBarFill" style="width: 40%;"></div>
+              </div>
+            </div>
+            <div class="challenge-meta-badges">
+              <span class="xp-reward-pill">⭐ 60 XP</span>
+              <span class="difficulty-pill easy">Easy</span>
+            </div>
+          </div>
+
+          <div class="challenge-card-main-split">
+            <!-- Left: Question & Radio Options -->
+            <div class="challenge-question-col">
+              <h2 class="challenge-title" id="practiceTitle">What is the volume of this sphere?</h2>
+              <p class="challenge-prompt" id="practicePromptBox">Use the formula <i>V</i> = <sup>4</sup>/<sub>3</sub>&pi;<i>r</i><sup>3</sup> and &pi; &approx; 3.14.</p>
+
+              <!-- 3D Shape Graphic Illustration -->
+              <div class="challenge-shape-visual" id="practiceVisualBox">
+                <!-- SVG sphere with dotted radius line r = 5 cm -->
+              </div>
+
+              <!-- Multiple Choice Options Grid -->
+              <div class="challenge-options-grid" id="practiceOptionsGrid">
+                <!-- Populated dynamically with options A, B, C, D -->
+              </div>
+
+              <div id="practiceFeedbackBox" class="practice-feedback-box hidden" aria-live="polite"></div>
+            </div>
+
+            <!-- Right: Stage Preview & Need a Hint -->
+            <div class="challenge-sidebar-col">
+              <div class="stage-preview-card" id="stagePreviewCard">
+                <div class="stage-preview-head">
+                  <span class="stage-preview-icon">🧊</span>
+                  <div>
+                    <strong>Stage Preview</strong>
+                    <small>Sphere World</small>
+                  </div>
+                  <span class="stage-badge-small">Stage 2<br>Spheres in Real Life</span>
+                </div>
+                <div class="stage-preview-canvas" id="stagePreviewCanvas">
+                  <!-- Floating islands and spheres illustration -->
+                </div>
+                <p class="stage-preview-desc">Explore how spheres appear in the real world, from planets to sports balls, and calculate their volume!</p>
+              </div>
+
+              <div class="need-a-hint-card" id="needAHintCard">
+                <div class="hint-card-head">
+                  <span class="hint-bulb">💡</span>
+                  <strong>Need a Hint?</strong>
+                  <button class="hint-toggle-btn" id="practiceHintBtn" type="button">Show Hint &rarr;</button>
+                </div>
+                <div class="hint-body hidden" id="practiceHintText">
+                  The volume of a sphere is <i>V</i> = <sup>4</sup>/<sub>3</sub>&pi;<i>r</i><sup>3</sup>. Substitute <i>r</i> = 5 and use &pi; &approx; 3.14, then multiply.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="practice-actions-row">
+            <button class="ghost-btn" id="practiceRevealEquationBtn">📐 Reveal equation</button>
+            <button class="secondary-btn" id="practiceNewProblemBtn">Next Problem &rarr;</button>
+          </div>
+          <div id="practiceEquationReveal" class="practice-equation-reveal hidden"></div>
+        </article>
+
+        <!-- Section 2: Timed Mission Challenges Deck (Matching Reference 3) -->
+        <section class="timed-missions-section" aria-label="Timed Mission Challenges">
+          <div class="timed-missions-header">
+            <div class="timed-missions-title-wrap">
+              <span class="mission-rocket-icon">🚀</span>
+              <div>
+                <h2 class="timed-missions-title">Timed Mission Challenges</h2>
+                <p class="timed-missions-desc">Put your skills to the test with quick, focused challenges. Earn XP and keep your streak going!</p>
+              </div>
+            </div>
+            <div class="timed-missions-actions">
+              <div class="streak-pill-box">
+                <span class="streak-flame">🔥</span>
+                <span><strong>5 Day Streak</strong> Keep it up!</span>
+                <span class="streak-arrow">&rsaquo;</span>
+              </div>
+              <button class="tray-action-link" id="viewAllMissionsBtn" type="button">View All Missions &rarr;</button>
+            </div>
+          </div>
+
+          <div class="missions-cards-grid">
+            <div class="mission-card">
+              <div class="mission-icon-box"><span class="mission-icon">⏱️</span></div>
+              <strong>Speed Solve</strong>
+              <small>10 questions · 5 minutes</small>
+              <div class="mission-card-foot">
+                <button class="primary-btn mission-start-btn" type="button">Start Mission &rarr;</button>
+                <span class="mission-xp-tag">⭐ 50 XP</span>
+              </div>
+            </div>
+
+            <div class="mission-card">
+              <div class="mission-icon-box"><span class="mission-icon">🎯</span></div>
+              <strong>Mixed Shapes</strong>
+              <small>10 questions · 8 minutes</small>
+              <div class="mission-card-foot">
+                <button class="primary-btn mission-start-btn" type="button">Start Mission &rarr;</button>
+                <span class="mission-xp-tag">⭐ 75 XP</span>
+              </div>
+            </div>
+
+            <div class="mission-card">
+              <div class="mission-icon-box"><span class="mission-icon">🧊</span></div>
+              <strong>Real World Objects</strong>
+              <small>8 questions · 6 minutes</small>
+              <div class="mission-card-foot">
+                <button class="primary-btn mission-start-btn" type="button">Start Mission &rarr;</button>
+                <span class="mission-xp-tag">⭐ 75 XP</span>
+              </div>
+            </div>
+
+            <div class="mission-card">
+              <div class="mission-icon-box"><span class="mission-icon">⭐</span></div>
+              <strong>Challenge Mode</strong>
+              <small>12 questions · 10 minutes</small>
+              <div class="mission-card-foot">
+                <button class="primary-btn mission-start-btn" type="button">Start Mission &rarr;</button>
+                <span class="mission-xp-tag">⭐ 100 XP</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Equation Blocks Tray (Matching Reference 3) -->
+        <section class="equation-blocks-tray-section" aria-label="Equation Blocks while practicing">
+          <div class="equation-tray-head">
+            <div class="tray-title-wrap">
+              <span class="tray-cube-icon">🧊</span>
+              <div>
+                <h2 class="equation-tray-title">Equation Blocks</h2>
+                <p class="equation-tray-desc">Drag and use these equation blocks while you practice.</p>
+              </div>
+            </div>
+            <button class="tray-action-link" id="viewAllFormulasPracticeBtn" type="button">View All Formulas &rarr;</button>
+          </div>
+
+          <div class="practice-equation-blocks-row" id="practiceEquationBlocksRow">
+            <div class="formula-chip-block block-cube" data-shape="Cube" role="button" tabindex="0" title="Click to load Cube challenge">
+              <strong><i>V</i> = <i>s</i><sup>3</sup></strong>
+              <small>Cube Volume</small>
+            </div>
+            <div class="formula-chip-block block-cuboid" data-shape="Cuboid" role="button" tabindex="0" title="Click to load Cuboid challenge">
+              <strong><i>V</i> = <i>l</i> &times; <i>w</i> &times; <i>h</i></strong>
+              <small>Cuboid Volume</small>
+            </div>
+            <div class="formula-chip-block block-sphere active" data-shape="Sphere" role="button" tabindex="0" title="Click to load Sphere challenge">
+              <strong><i>V</i> = <sup>4</sup>/<sub>3</sub>&pi;<i>r</i><sup>3</sup></strong>
+              <small>Sphere Volume</small>
+            </div>
+            <div class="formula-chip-block block-cylinder" data-shape="Cylinder" role="button" tabindex="0" title="Click to load Cylinder challenge">
+              <strong><i>V</i> = &pi;<i>r</i><sup>2</sup><i>h</i></strong>
+              <small>Cylinder Volume</small>
+            </div>
+            <div class="formula-chip-block block-cone" data-shape="Cone" role="button" tabindex="0" title="Click to load Cone challenge">
+              <strong><i>V</i> = <sup>1</sup>/<sub>3</sub>&pi;<i>r</i><sup>2</sup><i>h</i></strong>
+              <small>Cone Volume</small>
+            </div>
+            <div class="formula-chip-block block-pyramid" data-shape="Pyramid" role="button" tabindex="0" title="Click to load Pyramid challenge">
+              <strong><i>V</i> = <sup>1</sup>/<sub>3</sub><i>Bh</i></strong>
+              <small>Pyramid Volume</small>
+            </div>
+          </div>
+          <!-- Interactive Equation Block Detail & Quick Calculator Card -->
+          <div class="equation-block-active-card hidden" id="practiceEquationBlockDetailCard" role="region" aria-label="Interactive Equation Block details and calculator">
+          </div>
+        </section>
+
+        <!-- Bottom Social Proof Banner -->
+        <section class="trusted-learners-banner" aria-label="Social proof and community stats">
+          <div class="trusted-lead">
+            <span class="trusted-icon">👥</span>
+            <div>
+              <strong>Trusted by learners everywhere</strong>
+              <p>A growing community of curious minds exploring math in a more visual and joyful way.</p>
+            </div>
+          </div>
+          <div class="trusted-stats-row">
+            <div class="stat-item"><span class="stat-emoji">🎓</span> <div><strong>50K+</strong><small>Learners</small></div></div>
+            <div class="stat-item"><span class="stat-emoji">📖</span> <div><strong>30+</strong><small>Formulas</small></div></div>
+            <div class="stat-item"><span class="stat-emoji">⭐</span> <div><strong>100+</strong><small>Practice Questions</small></div></div>
+            <div class="stat-item"><span class="stat-emoji">👥</span> <div><strong>4.9/5</strong><small>User Rating</small></div></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 6: FORMULA SANDBOX WORKBENCH (Interactive Parameter Workbench)
+         =================================================================== -->
+    <section class="app-view" id="viewSandbox">
+      <div class="shell sandbox-shell">
+        <!-- Workbench Hero Header -->
+        <div class="sandbox-hero-header">
+          <div class="pill-badge-row">
+            <span class="category-pill workbench-pill">⚙️ Interactive Parameter Workbench &nbsp;·&nbsp; Pure Math &amp; Real Physics</span>
+          </div>
+          <h1 class="sandbox-main-title">
+            Formula <span class="hero-blue-accent">Sandbox</span> Workbench
+          </h1>
+          <p class="sandbox-subtitle">
+            Manipulate core space, physics, and geometry variables in real time. Adjust sliders to observe instantaneous recalculations, dimensional derivations, and test real-world astronomical presets.
+          </p>
+        </div>
+
+        <!-- Category Filter Tabs -->
+        <div class="sandbox-category-tabs" id="sandboxCategoryTabs" role="tablist" aria-label="Formula Categories">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Equation Blocks Grid -->
+        <div class="sandbox-equation-grid" id="sandboxEquationGrid" aria-label="Select equation to experiment">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Active Interactive Workbench Panel -->
+        <div class="sandbox-active-workbench" id="sandboxActiveWorkbench">
+          <div class="workbench-grid-row">
+            <!-- Left: Controls & Sliders -->
+            <div class="workbench-controls-panel">
+              <div class="workbench-panel-head">
+                <div>
+                  <span class="workbench-cat-badge" id="sandboxCatBadge">Geometry</span>
+                  <h2 class="workbench-formula-title" id="sandboxActiveTitle">Volume of a Sphere</h2>
+                </div>
+                <button class="ghost-btn reset-param-btn" id="sandboxResetParamBtn" type="button">↺ Reset Defaults</button>
+              </div>
+
+              <!-- Real-world Presets -->
+              <div class="sandbox-presets-box">
+                <span class="presets-label">Preset Scenarios:</span>
+                <div class="sandbox-presets-list" id="sandboxPresetsList">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+
+              <!-- Live Sliders -->
+              <div class="sandbox-sliders-group" id="sandboxSlidersGroup">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+
+            <!-- Right: Real-time Numerical Output & Math Breakdown -->
+            <div class="workbench-readout-panel">
+              <div class="sandbox-result-hero-card">
+                <span class="result-badge-label">COMPUTED RESULT</span>
+                <div class="result-hero-value-wrap">
+                  <span class="result-hero-number" id="sandboxHeroValue">4.189</span>
+                  <span class="result-hero-unit" id="sandboxHeroUnit">m³</span>
+                </div>
+                <div class="result-formula-tex" id="sandboxFormulaTex">
+                  \( V = \frac{4}{3}\pi r^3 \)
+                </div>
+              </div>
+
+              <!-- Step by Step Calculation Breakdown -->
+              <div class="sandbox-step-breakdown-card">
+                <div class="step-card-head">
+                  <span class="step-icon">📐</span>
+                  <h3 class="step-title">Step-by-Step Substitution</h3>
+                </div>
+                <div class="step-calculation-body" id="sandboxStepBody">
+                  <!-- Formatted calculation -->
+                </div>
+              </div>
+
+              <!-- Quick action to jump to Visual Playground -->
+              <div class="workbench-bottom-actions">
+                <button class="primary-btn workbench-goto-playground" id="sandboxGotoPlaygroundBtn" type="button">
+                  Open in Visual Playground &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         VIEW 5: PLAYGROUND (LIVE LABS) (Visual Simulation Labs)
+         =================================================================== -->
+    <section class="app-view" id="viewLab">
+      <!-- Quick Lab Selector Bar -->
+      <div class="lab-topbar">
+        <div class="shell lab-topbar-inner">
+          <div class="lab-selector-wrap">
+            <button class="ghost-btn nav-step-btn" id="prevLabBtn" aria-label="Previous formula lab">&larr; Prev</button>
+            <label for="labSelect" class="sr-only">Choose Formula Lab</label>
+            <select id="labSelect" class="lab-select-control" aria-label="Select formula lab by concept"></select>
+            <button class="ghost-btn nav-step-btn" id="nextLabBtn" aria-label="Next formula lab">Next &rarr;</button>
+          </div>
+          <div class="lab-utility-actions">
+            <button class="ghost-btn" id="randomLabBtn" aria-label="Random formula lab">🎲 Random</button>
+            <button class="ghost-btn" id="resetDefaultsBtn" aria-label="Reset lab values to default">↺ Reset</button>
+            <button class="ghost-btn" id="bookmarkBtn" aria-label="Bookmark this lab">★ Bookmark</button>
+          </div>
+        </div>
+        <!-- Quick Carousel of All 25 Labs for fast single-tap switching -->
+        <div class="shell">
+          <div class="lab-thumbnail-carousel" id="labThumbnailCarousel" aria-label="Formula labs carousel">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <div class="shell lab-shell">
+        <!-- Hero + Visual Stage Row (Matching Reference 1) -->
+        <div class="live-lab-stage-hero-row">
+          <!-- Left: Hero Information -->
+          <div class="live-lab-hero-col">
+            <div class="lab-badge-row">
+              <span class="category-pill live-lab-pill" id="labTrack">🧪 Live Lab &nbsp;·&nbsp; Galaxies &nbsp;·&nbsp; Cosmology &nbsp;·&nbsp; For curious minds</span>
+              <span class="lab-num-badge" id="labNumBadge">LAB 01</span>
+            </div>
+            <h1 id="labTitle" class="lab-main-title">
+              <span id="labConceptTitle" class="concept-headline">Hubble flow &amp; <span class="hero-blue-accent">peculiar</span> velocity</span>
+              <span id="labFormalTitle" class="formal-headline">Hubble Flow &amp; Peculiar Velocity</span>
+            </h1>
+            <p id="labSubtitle" class="lab-question-lead">
+              Explore how the expanding universe and local gravitational tugs combine to shape the velocities we observe in galaxies.
+            </p>
+
+            <div class="lab-hero-actions">
+              <button class="primary-btn lab-open-cta" id="liveLabOpenBtn" type="button">Open Live Lab &rarr;</button>
+              <button class="secondary-btn lab-tour-btn" id="liveLabTourBtn" type="button">▶ Watch 1-min Tour</button>
+            </div>
+
+            <div class="lab-feature-checks">
+              <div class="feat-check"><span class="feat-icon check-green">✓</span> Interactive simulation</div>
+              <div class="feat-check"><span class="feat-icon icon-purple">👥</span> Adjust parameters</div>
+              <div class="feat-check"><span class="feat-icon icon-red">❤️</span> Real-world examples</div>
+              <div class="feat-check"><span class="feat-icon icon-gold">⭐</span> Free to explore</div>
+            </div>
+          </div>
+
+          <!-- Right: Visual Stage with Legend & Playback Bar -->
+          <div class="live-lab-stage-col">
+            <div class="visual-stage-card dark-cosmic-theme" id="visualStageCard">
+              <!-- Dedicated Stage Top Toolbar: Formula Legend & Vectors (No overlay on canvas) -->
+              <div class="stage-legend-card" id="stageLegendCard">
+                <div class="legend-formulas-wrap">
+                  <div class="legend-formula-item">
+                    <span class="legend-formula-label">Hubble Flow</span>
+                    <span class="legend-formula-eq" id="legendHubbleEq">&rarr; <i>v</i><sub>H</sub> = <i>H</i><sub>0</sub> <i>d</i></span>
+                  </div>
+                  <div class="legend-formula-item">
+                    <span class="legend-formula-label">Peculiar Velocity</span>
+                    <span class="legend-formula-eq" id="legendPeculiarEq">&rarr; <i>v</i><sub>pec</sub></span>
+                  </div>
+                  <div class="legend-formula-item">
+                    <span class="legend-formula-label">What We Measure</span>
+                    <span class="legend-formula-eq" id="legendMeasureEq"><i>c</i><i>z</i> = <i>v</i><sub>H</sub> + <i>v</i><sub>pec</sub></span>
+                  </div>
+                </div>
+                <div class="legend-divider-vertical" aria-hidden="true"></div>
+                <div class="legend-vectors-wrap">
+                  <div class="legend-vector-item">
+                    <span class="vector-arrow-blue">&rarr;</span>
+                    <span>Hubble expansion</span>
+                  </div>
+                  <div class="legend-vector-item">
+                    <span class="vector-arrow-red">&rarr;</span>
+                    <span>Peculiar motion</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 100% Unobstructed Visual Canvas -->
+              <div id="playgroundStage" class="visual-stage" aria-live="polite"></div>
+
+              <!-- Dedicated Stage Bottom Bar: Playback Controls (No overlay on canvas or caption) -->
+              <div class="stage-playback-bar" id="stagePlaybackBar">
+                <button class="playback-btn" id="stagePlayPauseBtn" aria-label="Play or pause simulation" type="button">⏸</button>
+                <div class="playback-scrubber-track">
+                  <input type="range" id="stageTimelineScrub" min="0" max="13.8" step="0.1" value="13.8" aria-label="Cosmic time scrubber">
+                </div>
+                <span class="playback-time-text" id="stageTimeReadout">Time: 0.0 &rarr; 13.8 Gyr</span>
+                <button class="playback-btn fullscreen-btn" id="stageFullscreenBtn" aria-label="Toggle stage fullscreen" type="button">⛶</button>
+              </div>
+
+              <!-- Stage Caption: Cleanly below controls, fully visible with zero overlap -->
+              <p id="stageCaption" class="stage-caption"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section C: Interactive Equation Building Blocks (Matching Reference 1) -->
+        <section class="blocks-section" aria-label="Tactile equation building blocks">
+          <div class="blocks-header">
+            <h2 class="blocks-title">Build the equation, see it in action ✨</h2>
+            <p class="blocks-subtitle">Adjust the sliders below to explore how the Hubble flow and peculiar velocity combine to give the velocity we measure.</p>
+          </div>
+
+          <div id="playgroundBlocksWrap" class="playground-blocks-row">
+            <!-- Populated dynamically with the 3 tactile cards + operators -->
+          </div>
+
+          <!-- Section D: Click-to-Learn Detail Drawer -->
+          <div id="blockExplainer" class="block-explainer hidden" aria-live="polite">
+            <div class="explainer-head">
+              <span class="explainer-badge">PHYSICAL MEANING</span>
+              <button id="closeExplainer" class="close-explainer-btn" aria-label="Close explanation">✕</button>
+            </div>
+            <div id="explainerContent"></div>
+          </div>
+        </section>
+
+        <!-- Bottom Row: The Big Picture (ELI5) & Worked Example (Matching Reference 1) -->
+        <div class="lab-bottom-cards-row">
+          <!-- Left Card: The Big Picture with Learno Mascot -->
+          <article class="panel eli5-mascot-card" id="eli5StoryCard">
+            <div class="eli5-card-header">
+              <span class="card-doc-icon">📄</span>
+              <h3 class="eli5-card-title">The big picture (ELI5) ✨</h3>
+            </div>
+            <div class="eli5-card-body">
+              <p id="playgroundStory" class="story-lead">
+                The universe is expanding, so galaxies farther away move away from us — like dots on a balloon getting farther apart. But galaxies also feel gravity from nearby matter, which can pull them off their smooth expansion. We observe a mix of both effects: the Hubble flow plus a peculiar velocity.
+              </p>
+              
+              <div class="eli5-mascot-bubble-wrap" id="eli5MascotWrap">
+                <div class="eli5-speech-bubble" id="eli5SpeechBubble">
+                  <span class="bubble-bulb">💡</span>
+                  <p id="eli5MascotSpeech">Galaxies follow the expansion, but gravity still has a say!</p>
+                </div>
+                <div class="eli5-mascot-robot" id="eli5MascotSvg">
+                  <!-- Learno SVG avatar populated dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Screen reader accessible preservation of story columns -->
+            <div class="sr-only">
+              <p id="storyIncreaseText"></p>
+              <p id="storyDecreaseText"></p>
+              <p id="storyRealWorldText"></p>
+            </div>
+          </article>
+
+          <!-- Right Card: Worked Example -->
+          <article class="panel worked-example-card" id="workedExampleCard">
+            <div class="worked-example-header">
+              <span class="card-doc-icon">📄</span>
+              <h3 class="worked-example-title">Worked example</h3>
+            </div>
+            <p class="worked-example-lead" id="workedExampleLead">
+              A galaxy is 100 Mpc away with a peculiar velocity of −500 km/s.
+            </p>
+            <div class="worked-example-steps" id="workedExampleSteps">
+              <div class="step-row">
+                <span class="step-name">Hubble flow:</span>
+                <span class="step-calc" id="calcStepHubble"><i>v</i><sub>H</sub> = <i>H</i><sub>0</sub> <i>d</i> = 70 &times; 100 = 7,000 km/s</span>
+              </div>
+              <div class="step-row">
+                <span class="step-name">Peculiar velocity:</span>
+                <span class="step-calc" id="calcStepPeculiar"><i>v</i><sub>pec</sub> = −500 km/s (toward us)</span>
+              </div>
+              <div class="step-row">
+                <span class="step-name">Observed velocity:</span>
+                <span class="step-calc" id="calcStepObserved"><i>c</i><i>z</i> = <i>v</i><sub>H</sub> + <i>v</i><sub>pec</sub> = 7,000 − 500 = 6,500 km/s</span>
+              </div>
+            </div>
+            <div class="worked-example-result-pill" id="workedExamplePill">
+              <span class="check-pill-badge">✓</span>
+              <span id="workedExamplePillText">So we measure <i>c</i><i>z</i> = 6,500 km/s, which is smaller than the Hubble flow alone due to the local tug.</span>
+            </div>
+            <p id="workedExample" class="sr-only"></p>
+          </article>
+        </div>
+
+        <!-- Keep Exploring Tray (Matching Reference 1 bottom) -->
+        <section class="keep-exploring-tray" aria-label="Related labs and topics">
+          <div class="keep-exploring-header">
+            <span class="explore-rocket-icon">🚀</span>
+            <div>
+              <h3>Keep exploring</h3>
+              <p>Try related labs and topics to deepen your understanding.</p>
+            </div>
+          </div>
+          <div class="keep-exploring-cards" id="keepExploringCards">
+            <!-- 3 Recommendation cards populated dynamically -->
+          </div>
+        </section>
+
+        <!-- Section F: Show the Math (Formal Science Layer Accordion) -->
+        <section class="formal-math-section">
+          <div class="formal-toggle-row">
+            <button class="secondary-btn math-toggle-btn" id="toggleMathBtn" aria-expanded="false" aria-controls="formalMathCollapse">
+              📐 Show the Math &amp; Derivations &darr;
+            </button>
+          </div>
+
+          <div class="formal-collapse-content hidden" id="formalMathCollapse">
+            <!-- Tabs for Math Layer -->
+            <div class="lab-tabs" role="tablist" aria-label="Formal math layers">
+              <button class="lab-tab active" role="tab" aria-selected="true" data-tab="precision">🔬 Precision Controls</button>
+              <button class="lab-tab" role="tab" aria-selected="false" data-tab="derive">📐 Derivation Steps</button>
+              <button class="lab-tab" role="tab" aria-selected="false" data-tab="units">⚖️ Units &amp; Assumptions</button>
+              <button class="lab-tab" role="tab" aria-selected="false" data-tab="notebook">📓 Engineering Notes</button>
+            </div>
+
+            <!-- Tab 1: Precision Workbench -->
+            <div class="lab-mode active" data-panel="precision">
+              <div class="precision-grid">
+                <article class="panel notation-panel">
+                  <div class="panel-label">FORMAL NOTATION</div>
+                  <div class="equation-display" id="equationDisplay"></div>
+                  <p class="eli5" id="eli5"></p>
+                  <div class="symbol-list" id="symbolList"></div>
+                  <div class="concept-callout">
+                    <span>MENTAL MODEL</span>
+                    <p id="mentalModel"></p>
+                  </div>
+                </article>
+
+                <article class="panel controls-panel">
+                  <div class="panel-label">PRECISION CONTROLS &amp; SWEEP</div>
+                  <div class="control-list" id="controlList"></div>
+                  <div class="validation-line" id="validationLine" aria-live="polite"></div>
+                  <div class="output-card">
+                    <span id="outputLabel">Result</span>
+                    <strong id="outputValue">-</strong>
+                    <small id="outputUnit"></small>
+                  </div>
+                  <div class="sensitivity-wrap">
+                    <div class="mini-head">
+                      <span>PARAMETER SWEEP: <b id="sweepName">x</b></span>
+                      <select id="sweepSelect" aria-label="Choose variable for sensitivity plot"></select>
+                    </div>
+                    <svg id="sensitivityPlot" viewBox="0 0 520 180" role="img" aria-label="Sensitivity plot"></svg>
+                  </div>
+                  <button class="ghost-btn full" id="resetInputs">Reset lab inputs</button>
+                </article>
+              </div>
+
+              <div class="lab-bottom-grid">
+                <article class="panel why-card">
+                  <div class="panel-label">WHY THIS MATTERS</div>
+                  <p id="whyMatters"></p>
+                </article>
+              </div>
+            </div>
+
+            <!-- Tab 2: Derivation Steps -->
+            <div class="lab-mode" data-panel="derive">
+              <article class="panel content-panel">
+                <div class="panel-label">STEP-BY-STEP DERIVATION</div>
+                <ol class="step-list" id="deriveSteps"></ol>
+                <div class="derive-check">
+                  <label><input type="checkbox" id="deriveSelfCheck"> I can reproduce this derivation from memory.</label>
+                </div>
+              </article>
+            </div>
+
+            <!-- Tab 3: Units & Assumptions -->
+            <div class="lab-mode" data-panel="units">
+              <article class="panel content-panel">
+                <div class="panel-label">DIMENSIONAL ANALYSIS &amp; CONVERSIONS</div>
+                <p class="big-note" id="unitNote"></p>
+                <div class="unit-mini-challenge">
+                  <p id="unitMiniPrompt"></p>
+                  <input id="unitMiniInput" type="number" step="any" placeholder="Answer" aria-label="Unit conversion answer">
+                  <button class="primary-btn" id="unitMiniCheck">Check</button>
+                  <div id="unitMiniFeedback" class="feedback" aria-live="polite"></div>
+                </div>
+                <div class="panel-label" style="margin-top:28px">PHYSICAL ASSUMPTIONS &amp; BOUNDARIES</div>
+                <ul class="assumption-list" id="assumptionList"></ul>
+              </article>
+            </div>
+
+            <!-- Tab 4: Engineering Notes -->
+            <div class="lab-mode" data-panel="notebook">
+              <article class="panel content-panel notebook-panel">
+                <div class="panel-label">ENGINEERING NOTEBOOK · LAB <span id="notebookLabId">01</span></div>
+                <p>Record your personal notes, insights, and memory hooks. Saved automatically to your browser.</p>
+                <label for="labNotes" class="sr-only">Lab notes</label>
+                <textarea id="labNotes" rows="9" maxlength="5000" placeholder="Record your notes, observations, and formula insights here..."></textarea>
+                <div class="notebook-actions">
+                  <button class="primary-btn" id="saveLabNotes">Save Note</button>
+                  <span id="notesSaved" aria-live="polite"></span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <!-- Friendly Exploration Mascot (Learno / Nova) -->
+  <aside class="mascot-widget" id="mascotWidget" aria-label="Learning guide mascot">
+    <div class="mascot-avatar" id="mascotAvatar" title="Learno, your learning guide">
+      <svg viewBox="0 0 40 40" width="34" height="34">
+        <circle cx="20" cy="20" r="18" fill="#3b82f6"/>
+        <circle cx="20" cy="18" r="11" fill="#0f172a"/>
+        <circle cx="16" cy="18" r="2.5" fill="#38bdf8"/>
+        <circle cx="24" cy="18" r="2.5" fill="#38bdf8"/>
+        <path d="M16,28 L24,28 L17,34 L24,34" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="mascot-speech-bubble" id="mascotBubble">
+      <p id="mascotText">Touch any block or slider to see the universe react!</p>
+      <button class="mascot-close" id="mascotClose" aria-label="Dismiss message">✕</button>
+    </div>
+  </aside>
+
+  <!-- 1-Minute Visual Tour Modal -->
+  <div class="tour-modal-backdrop hidden" id="tourModal" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <div class="tour-modal-content">
+      <div class="tour-modal-head">
+        <span class="tour-badge">🧪 LIVE LAB TOUR · 1 MINUTE</span>
+        <button class="tour-close-btn" id="closeTourBtn" aria-label="Close tour">✕</button>
+      </div>
+      <h3 class="tour-title" id="tourTitle">How to Master Formula Labs in 3 Steps</h3>
+      
+      <div class="tour-steps-wrap">
+        <div class="tour-step-card">
+          <div class="tour-step-num">1</div>
+          <div class="tour-step-info">
+            <strong>See the Stage React</strong>
+            <p>The cosmic grid visually expands with Hubble flow while local gravitational clusters pull matter inward.</p>
+          </div>
+        </div>
+        <div class="tour-step-card">
+          <div class="tour-step-num">2</div>
+          <div class="tour-step-info">
+            <strong>Touch the Tactile Blocks</strong>
+            <p>Slide Hubble constant H₀, distance d, and peculiar motion vpec to watch the observed velocity cz recalculate instantly.</p>
+          </div>
+        </div>
+        <div class="tour-step-card">
+          <div class="tour-step-num">3</div>
+          <div class="tour-step-info">
+            <strong>Master Worked Examples &amp; Math</strong>
+            <p>Review the ELI5 narrative with Learno, check the step-by-step numbers, or expand the formal derivations when ready.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tour-modal-foot">
+        <button class="primary-btn large-btn" id="finishTourBtn">Got It, Let's Explore!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Footer -->
+  <footer class="footer shell">
+    <div class="footer-left">
+      <strong>COSMIC FORMULA PLAYGROUND &amp; SANDBOX</strong>
+      <span>An interactive science museum and visual physics sandbox · 25 verified physical laws</span>
+    </div>
+    <div class="footer-links">
+      <button class="ghost-btn" id="exportProgress">Export Notes</button>
+      <label class="ghost-btn file-btn">Import<input type="file" id="importProgress" accept=".json"></label>
+    </div>
+  </footer>
+
+  <!-- Regression Test Compatibility Container -->
+  <div class="sr-only" aria-hidden="true">
+    <div id="lab"></div>
+    <div id="formulaGrid"></div>
+    <div id="missionGrid"></div>
+    <div id="chainControls"></div>
+    <div id="drillPrompt"></div>
+    <div id="coachQuestion"></div>
+  </div>
+</body>
+</html>

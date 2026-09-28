@@ -1,0 +1,17 @@
+{
+  "name": "Cosmic Formula Playground v3.0",
+  "short_name": "Cosmic Formula",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#f8fafc",
+  "description": "Interactive visual science museum, tactile formula playground, and physics sandbox across 25 verified physical laws.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

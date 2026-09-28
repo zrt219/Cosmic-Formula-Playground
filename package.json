@@ -1,0 +1,10 @@
+{
+  "name": "z-space-formula-sandbox",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/qa.mjs && node tests/v3.mjs",
+    "check": "node --check app.js && node --check formulas.mjs && node --check v3-model.mjs && node tests/qa.mjs && node tests/v3.mjs"
+  }
+}
