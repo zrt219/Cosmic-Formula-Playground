@@ -1,6 +1,7 @@
 {
-  "name": "z-space-formula-sandbox",
+  "name": "cosmic-formula-playground",
   "version": "3.0.0",
+  "description": "Interactive 3D astrophysics, orbital mechanics & space physics playground across 25 verified physical laws with tactile formula sliders, real-time vector simulations, and step-by-step mathematical solvers.",
   "private": true,
   "type": "module",
   "scripts": {

@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://z-space-formula-playground-v30-verc.vercel.app/">
+    <img src="docs/assets/cosmic-formula-playground-banner.png" alt="Cosmic Formula Playground & Sandbox Banner Cover" width="100%" style="border-radius: 12px; box-shadow: 0 16px 48px rgba(0,0,0,0.25);" />
+  </a>
+</p>
+
 # 🌌 Cosmic Formula Playground & Sandbox
 
 <div align="center">
@@ -181,6 +187,37 @@ Spacecraft state propagation, sensor noise modeling, and Kalman filter gain upda
 |:---:|:---:|
 | <img src="docs/assets/screenshots/00-practice-engine.png" width="100%"/> | <img src="docs/assets/screenshots/00-home-hero.png" width="100%"/> |
 | *250+ procedural question variants with multi-step hints* | *Tactile drag rotation & dynamic isometric geometry* |
+
+---
+
+## 🎨 UI/UX Architecture & Concept Gallery
+
+High-fidelity interface design specifications and pedagogy mockups crafted for the Cosmic Formula ecosystem:
+
+| **01. Home Hero & 3D Shapes** | **02. Syllabus & Learning Roadmap** |
+|:---:|:---:|
+| <img src="docs/assets/ui-concepts/ui-concept-01-home-hero-3d-shapes.png" width="100%"/> | <img src="docs/assets/ui-concepts/ui-concept-02-syllabus-guided-roadmap.png" width="100%"/> |
+| *Tactile 3D shape manipulation & Learno guide* | *Milestone tracks across 25 space formulas* |
+
+| **03. Formula Library Catalog** | **04. Hubble Flow & Velocity Lab** |
+|:---:|:---:|
+| <img src="docs/assets/ui-concepts/ui-concept-03-formula-library-catalog.png" width="100%"/> | <img src="docs/assets/ui-concepts/ui-concept-04-lab-hubble-flow-velocity.png" width="100%"/> |
+| *Categorized searchable catalog across 120+ formulas* | *Cosmological expansion & peculiar velocity* |
+
+| **05. Interstellar Dust Attenuation** | **06. Cosmological Redshift Waves** |
+|:---:|:---:|
+| <img src="docs/assets/ui-concepts/ui-concept-05-lab-dust-attenuation.png" width="100%"/> | <img src="docs/assets/ui-concepts/ui-concept-06-lab-cosmological-redshift.png" width="100%"/> |
+| *Radiative transfer & Beer-Lambert dust extinction* | *Wavelength wave stretching across cosmic time* |
+
+| **07. Rocket Equation & Thrust** | **08. Solar Sail Radiation Pressure** |
+|:---:|:---:|
+| <img src="docs/assets/ui-concepts/ui-concept-07-lab-rocket-equation-thrust.png" width="100%"/> | <img src="docs/assets/ui-concepts/ui-concept-08-lab-solar-sail-lightness.png" width="100%"/> |
+| *Tsiolkovsky delta-v, fuel mass ratio & staging* | *Solar sail lightness number & radiation push* |
+
+| **09. Space Plasma Physics & Waves** | **10. Practice Engine & Challenges** |
+|:---:|:---:|
+| <img src="docs/assets/ui-concepts/ui-concept-09-lab-plasma-physics-waves.png" width="100%"/> | <img src="docs/assets/ui-concepts/ui-concept-10-practice-mission-challenges.png" width="100%"/> |
+| *Debye shielding bubbles & Alfvén magnetic waves* | *Adaptive multiple choice questions & XP rewards* |
 
 ---
 
